@@ -1,8 +1,7 @@
-
 const container = document.querySelector(".cards");
 
 function drawPokemans() {
-    container.innerHTML = "";
+  container.innerHTML = "";
 
   for (let i = 0; i < data.length; i++) {
     const poke = data[i];
@@ -12,27 +11,48 @@ function drawPokemans() {
 
     const title = document.createElement("h2");
     title.classList.add("card--title");
+    title.textContent = poke.name
+      ? poke.name[0].toUpperCase() + poke.name.slice(1)
+      : "Unknown";
 
     const image = document.createElement("img");
     image.classList.add("card--img");
     image.width = 256;
-    image.src = data[i].sprites.other["official-artwork"].front_default;
+    image.src =
+      poke.sprites?.other?.["official-artwork"]?.front_default ||
+      poke.sprites?.front_default ||
+      "";
 
     const stats = document.createElement("ul");
     stats.classList.add("card--text");
 
-    for (let j = 0; j < data[i].stats.length; j++) {
+    for (let j = 0; j < poke.stats.length; j++) {
       const item = document.createElement("li");
-      item.innerHTML = `${data[i].stats[j].stat.name.toUpperCase()}: ${
-        data[i].stats[j].base_stat
+      item.innerHTML = `${poke.stats[j].stat.name.toUpperCase()}: ${
+        poke.stats[j].base_stat
       }`;
       stats.appendChild(item);
     }
 
+    const gamesTitle = document.createElement("h3");
+    gamesTitle.classList.add("card--subtitle");
+    gamesTitle.textContent = "Game appearances";
+
+    const gamesList = document.createElement("ul");
+    gamesList.classList.add("card--games-list");
+
+    poke.game_indices.forEach((entry) => {
+      const li = document.createElement("li");
+      li.textContent = entry.version.name;
+      gamesList.appendChild(li);
+    });
+
     card.append(title);
     card.append(image);
     card.append(stats);
-    
+    card.append(gamesTitle);
+    card.append(gamesList);
+
     container.append(card);
   }
 }
